@@ -5,7 +5,6 @@ package mimir;
 service WeatherServer {
   // Sends a greeting
   rpc get_measurements (MeasurementRequest) returns (MeasurementResponse) {}
-  rpc get_current_weather (CurrentWeatherRequest) returns (CurrentWeatherResponse) {}
 }
 
 message MeasurementRequest {
@@ -29,23 +28,4 @@ message Measurement {
 
 message MeasurementResponse {
 	repeated Measurement measurements = 1;
-}
-
-message CurrentWeatherResponse {
-	int64 time = 1;
-	string air_temp = 2;
-	string pressure = 3;
-	string humidity = 4;
-	string ground_temp = 5;
-	string uv = 6;
-	string uv_risk_lv = 7;
-	string wind_speed = 8;
-	string wind_gust = 9;
-	string rainfall = 10;
-    string rain_rate = 11;
-	string wind_dir = 12;
-}
-
-message CurrentWeatherRequest {
-	int64 duration = 1;
 }

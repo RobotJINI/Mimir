@@ -36,53 +36,13 @@ class WeatherServer(weather_measurement_pb2_grpc.WeatherServer):
 
         def get_measurements(self, request, context):
             try:
-                logging.debug("get_measurements")
-                future = self._executor.submit(self._weather_db.get_historical_weather, request.start_time, request.end_time)
-                query_response = future.result()
-                measurement_response = self._query_to_measurement_response(query_response)
-                return measurement_response
+                logging.debug('get_measurements')
+                query_response = self._weather_db.get_historical_weather(request.start_time, request.end_time)
+                logging.debug(f'query_response:{len(query_response)}')
+                return self._query_to_measurement_response(query_response)
             except Exception as e:
                 logging.error(f'Error get_measurements failed!\n{e}')
                 return weather_measurement_pb2.MeasurementResponse()
-
-        def get_current_weather(self, request, context):
-            try:
-                logging.debug("get_current_weather")
-                end_time = self._get_time_ms()
-                start_time = end_time - (request.duration * 1000)
-
-                future = self._executor.submit(self._get_current_weather, start_time, end_time)
-                current_weather_response = future.result()
-
-                return current_weather_response
-            except Exception as e:
-                logging.error(f'Error get_current_weather failed!\n{e}')
-                return weather_measurement_pb2.CurrentWeatherResponse()
-            
-        def _get_current_weather(self, start_time, end_time):
-            query_response = self._weather_db.get_current_weather(start_time, end_time)
-            uv_risk_lv = self._weather_db.get_latest_uv_risk()
-            average_wind_dir = self._weather_db.get_average_wind_dir(start_time, end_time)
-            
-            current_weather_response = self._query_to_current_weather_response(query_response, uv_risk_lv, average_wind_dir, end_time)
-            logging.debug(current_weather_response)
-            return current_weather_response
-
-        def _query_to_current_weather_response(self, query_response, uv_risk_lv, average_wind_dir, time):
-            query_response = query_response[0]
-            return weather_measurement_pb2.CurrentWeatherResponse(
-                    time=int(time),
-                    air_temp=str(query_response['air_temp']),
-                    pressure=str(query_response['pressure']),
-                    humidity=str(query_response['humidity']),
-                    ground_temp=str(query_response['ground_temp']),
-                    uv=str(query_response['uv']),
-                    uv_risk_lv=str(uv_risk_lv),
-                    wind_speed=str(query_response['wind_speed']),
-                    wind_gust=str(query_response['gust']) ,
-                    rainfall=str(query_response['rainfall']),
-                    rain_rate=str(query_response['rain_rate']),
-                    wind_dir=str(average_wind_dir))
 
         def _query_to_measurement_response(self, query_response):
             measurement_response = weather_measurement_pb2.MeasurementResponse()
@@ -103,6 +63,3 @@ class WeatherServer(weather_measurement_pb2_grpc.WeatherServer):
                 measurement_response.measurements.append(proto_measurement)
 
             return measurement_response
-
-        def _get_time_ms(self):
-            return time.time() * 1000
