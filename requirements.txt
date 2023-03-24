@@ -1,0 +1,8 @@
+bme280==0.6
+board==1.0
+gpiozero==1.6.2
+grpc==1.0.0
+grpcio==1.51.1
+MySQL-python==1.2.5
+protobuf==4.22.1
+smbus2==0.4.2

@@ -1,0 +1,12 @@
+[Unit]
+Description=Mimir Weather Station App
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/mimir/mimir/mimir.py
+WorkingDirectory=/home/mimir/mimir/
+Restart=always
+User=mimir
+
+[Install]
+WantedBy=multi-user.target
