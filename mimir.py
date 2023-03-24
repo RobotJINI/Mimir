@@ -103,8 +103,7 @@ def main():
         os.makedirs(logs_folder)
         
     log_filename = datetime.now().strftime(os.path.join('logs', 'mimir_%Y-%m-%d_%H-%M-%S.log'))
-    #logging.basicConfig(filename=log_filename, format='%(message)s', level=logging.DEBUG)
-    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+    logging.basicConfig(filename=log_filename, format='%(message)s', level=logging.DEBUG)
     
     mimir = Mimir()
 
