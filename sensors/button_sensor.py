@@ -17,7 +17,7 @@ class ButtonSensor(Thread):
         self._sensor.when_pressed = self._spin
         self._running = True
         while self._running:
-            time.sleep(.1)
+            time.sleep(.001)
 
     def stop(self):
         self._running = False
